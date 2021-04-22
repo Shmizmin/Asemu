@@ -6,6 +6,8 @@
 #include <functional>
 #include <algorithm>
 #include <string>
+#include <fstream>
+#include <sstream>
 
 #include "helper.hpp"
 #include "flags.hpp"
@@ -86,12 +88,20 @@ auto step(const std::string& code) noexcept
 
 int main(void)
 {
-	std::string code =
-		#include "assembly.txt"
+	std::ifstream t("./assembly.txt");
+	std::string code;
+
+	t.seekg(0, std::ios::end);
+	code.reserve(t.tellg());
+	t.seekg(0, std::ios::beg);
+
+	code.assign((std::istreambuf_iterator<char>(t)),
+		std::istreambuf_iterator<char>());
 
 	ReplaceStringInPlace(code, "SAX", "0");
 	ReplaceStringInPlace(code, "SBX", "1");
 	ReplaceStringInPlace(code, "SSP", "2");
+	ReplaceStringInPlace(code, "\n", "");
 	auto lines = split(code, ';');
 
 	auto curIndex = 0z;
