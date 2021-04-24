@@ -24,6 +24,9 @@ Memory<MEMSIZE> memory;
 
 std::array registers{ Register(), Register(), Register() };
 
+DATASIZE programCounter = 128ui16;
+
+constexpr auto basePointer = 128ui16;
 
 #include "alu.hpp"
 #include "core.hpp"
@@ -37,53 +40,67 @@ struct CPU
 #include "microop_define.hpp"
 #include "instruction_define.hpp"
 
-auto step(const std::string& code) noexcept
+
+auto step(DATASIZE instruction, DATASIZE operand1, DATASIZE operand2) noexcept
 {
-	auto ops = split(code, ' ');
-
-	auto instruction = ops[0];
-
-	DATASIZE operand1 = static_cast<DATASIZE>(std::stoi(ops[1])), operand2;
-
-	if (ops.size() >= 3) operand2 = static_cast<DATASIZE>(std::stoi(ops[2]));
-
-	if (instruction == "MMCMP")
+	switch (instruction)
 	{
-		MMCPY(operand1, 100ui16);
-		MMCPY(operand2, 101ui16);
+	case 1: return MPMIO(operand1, operand2); break;
+	case 2: return MRMIO(operand1, operand2); break;
 
-		MMSUB(100ui16, 101ui16);
+	case 3:
+	{
+		MMCPY(operand1, 126ui16);
+		MMCPY(operand2, 127ui16);
 
-		MIMOV(100ui16, 0ui16);
-		MIMOV(101ui16, 0ui16);
+		MMSUB(126ui16, 127ui16);
+
+		//MIMOV(126ui16, 0ui16);
+		//MIMOV(127ui16, 0ui16);
 	}
 
-	if (instruction == "MPMIO")
-		return MPMIO(operand1);
+	case 4: INSN(MMCPY); break;
+	case 5: INSN(MRMOV); break;
+	case 6: INSN(RMMOV); break;
+	case 7: INSN(RRMOV); break;
+	case 8: INSN(MIMOV); break;
+	case 9: INSN(RIMOV); break;
 
-	if (instruction == "MRMIO")
-		return MRMIO(operand1);
+	case 10: INSN(MMADD); break;
+	case 11: INSN(MMSUB); break;
+	case 12: INSN(MMMUL); break;
+	case 13: INSN(MMDIV); break;
+	case 14: INSN(MMSHL); break;
+	case 15: INSN(MMSHR); break;
 
-	INSN_CMP(MMCPY)
-	INSN_CMP(RMCPY)
-	INSN_CMP(RIMOV)
-	INSN_CMP(MIMOV)
-	INSN_CMP(MMADD)
-	INSN_CMP(MMSUB)
-	INSN_CMP(MMMUL)
-	INSN_CMP(MMDIV)
-	INSN_CMP(MMSHL)
-	INSN_CMP(MMSHR)
+	case 16: INSN(RMADD); break;
+	case 17: INSN(RMSUB); break;
+	case 18: INSN(RMMUL); break;
+	case 19: INSN(RMDIV); break;
+	case 20: INSN(RMSHL); break;
+	case 21: INSN(RMSHR); break;
 
-	INSN_CMP(RMADD)
-	INSN_CMP(RMSUB)
-	INSN_CMP(RMMUL)
-	INSN_CMP(RMDIV)
-	INSN_CMP(RMSHL)
-	INSN_CMP(RMSHR)
+	case 22: INSN(RRADD); break;
+	case 23: INSN(RRSUB); break;
+	case 24: INSN(RRMUL); break;
+	case 25: INSN(RRDIV); break;
+	case 26: INSN(RRSHL); break;
+	case 27: INSN(RRSHR); break;
+
+	case 28: INSN(UNJMP); break;
+	case 29: INSN(ERJMP); break;
+	case 30: INSN(NRJMP); break;
+	case 31: INSN(EMJMP); break;
+	case 32: INSN(NMJMP); break;
+
+	default:
+		std::cout << "Instruction not supported : ";
+		return DATASIZE(-1);
+	}
 
 	return 0ui16;
 }
+
 
 
 int main(void)
@@ -101,26 +118,89 @@ int main(void)
 	ReplaceStringInPlace(code, "SAX", "0");
 	ReplaceStringInPlace(code, "SBX", "1");
 	ReplaceStringInPlace(code, "SSP", "2");
+	ReplaceStringInPlace(code, "SBP", "128");
 	ReplaceStringInPlace(code, "\n", "");
 	auto lines = split(code, ';');
 
-	auto curIndex = 0z;
+	for (auto& line : lines)
+	{
+		ReplaceStringInPlace(line, "MPMIO", "1");
+		ReplaceStringInPlace(line, "MRMIO", "2");
+
+		ReplaceStringInPlace(line, "MMCMP", "3");
+		ReplaceStringInPlace(line, "MMCPY", "4");
+
+		ReplaceStringInPlace(line, "MRMOV", "5");
+		ReplaceStringInPlace(line, "RMMOV", "6");
+		ReplaceStringInPlace(line, "RRMOV", "7");
+
+		ReplaceStringInPlace(line, "MIMOV", "8");
+		ReplaceStringInPlace(line, "RIMOV", "9");
+
+		ReplaceStringInPlace(line, "MMADD", "10");
+		ReplaceStringInPlace(line, "MMSUB", "11");
+		ReplaceStringInPlace(line, "MMMUL", "12");
+		ReplaceStringInPlace(line, "MMDIV", "13");
+		ReplaceStringInPlace(line, "MMSHL", "14");
+		ReplaceStringInPlace(line, "MMSHR", "15");
+
+		ReplaceStringInPlace(line, "RMADD", "16");
+		ReplaceStringInPlace(line, "RMSUB", "17");
+		ReplaceStringInPlace(line, "RMMUL", "18");
+		ReplaceStringInPlace(line, "RMDIV", "19");
+		ReplaceStringInPlace(line, "RMSHL", "20");
+		ReplaceStringInPlace(line, "RMSHR", "21");
+
+		ReplaceStringInPlace(line, "RRADD", "22");
+		ReplaceStringInPlace(line, "RRSUB", "23");
+		ReplaceStringInPlace(line, "RRMUL", "24");
+		ReplaceStringInPlace(line, "RRDIV", "25");
+		ReplaceStringInPlace(line, "RRSHL", "26");
+		ReplaceStringInPlace(line, "RRSHR", "27");
+
+		ReplaceStringInPlace(line, "UNJMP", "28");
+
+		ReplaceStringInPlace(line, "ERJMP", "29");
+		ReplaceStringInPlace(line, "NRJMP", "30");
+
+		ReplaceStringInPlace(line, "EMJMP", "31");
+		ReplaceStringInPlace(line, "NMJMP", "32");
+	}
+
+	auto i = 128ui16;
+	for (auto& line : lines)
+	{
+		auto ops = split(line, ' ');
+
+		memory.write(i + 0ui16, DATASIZE(std::stoi(ops[0])));
+		memory.write(i + 1ui16, DATASIZE(std::stoi(ops[1])));
+		memory.write(i + 2ui16, DATASIZE(std::stoi(ops[2])));
+
+		i += 3ui16;
+	}
 
 	while (true)
 	{
-		if (curIndex + 1z <= lines.size())
+		if (programCounter < (DATASIZE(lines.size() * 3z) + basePointer))
 		{
-			std::cout << lines[curIndex] << " : " << step(lines[curIndex]);
-			++curIndex;
+			{
+				auto instruction = memory.read(programCounter + 0ui16);
+				auto operand1    = memory.read(programCounter + 1ui16);
+				auto operand2    = memory.read(programCounter + 2ui16);
+
+				std::cout << instruction << ' ' << operand1 << ' ' << operand2 << " : " << step(instruction, operand1, operand2);
+
+				programCounter += 3ui16;
+			}
 		}
 
 		else
 		{
-			std::cout << "Can't step another line!" << std::endl;
+			return EXIT_SUCCESS;
 		}
 
-		std::cin.get();
+		std::cin.ignore();
 	}
 
-	return 0;
+	return EXIT_SUCCESS;
 }

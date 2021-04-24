@@ -1,10 +1,12 @@
 #pragma once
 
-#define MPMIO(x) memory.read(x)
-#define MRMIO(x) registers[x].read(0ui16)
+#define MPMIO(x, y) memory.read(x)
+#define MRMIO(x, y) registers[x].read(0ui16)
 
-#define INSN_CMP(s) if (instruction == #s) { \
+#define INSN_CMP(s) else if (instruction == #s) { \
 		##s(operand1, operand2); } \
+
+#define INSN(s) s(operand1, operand2)
 
 #define args Flags flags, DATASIZE op1, DATASIZE op2
 
