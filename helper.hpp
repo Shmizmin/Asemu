@@ -24,6 +24,8 @@ constexpr std::size_t operator "" z(unsigned long long n)
 	return n;
 }
 
+#define regval(x) registers[x##z].read(0ui16)
+
 std::vector<std::string> split(const std::string & str, char delim)
 {
 	std::vector<std::string> strings;

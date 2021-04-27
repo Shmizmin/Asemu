@@ -1,59 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Asemu Header Files">
+      <UniqueIdentifier>{dc39d957-db93-4757-89e2-91d786173733}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Asemu Source Files">
+      <UniqueIdentifier>{e5af86e3-ef72-42c8-93b0-fe3d145236db}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Asemu Assembly Files">
+      <UniqueIdentifier>{f83e3f0b-c7e9-4264-aa90-22e8eb247a58}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="helper.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="microop.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="flags.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="instruction.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pipeline.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="memory.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="alu.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="microop_define.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="instruction_define.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="assembly.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>Asemu Assembly Files</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Parser.cpp">
+      <Filter>Asemu Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Instruction.cpp">
+      <Filter>Asemu Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Assembler.cpp">
+      <Filter>Asemu Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MicroOperation.cpp">
+      <Filter>Asemu Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Parser.hpp">
+      <Filter>Asemu Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Instruction.hpp">
+      <Filter>Asemu Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Assembler.hpp">
+      <Filter>Asemu Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MicroOperation.hpp">
+      <Filter>Asemu Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Addressing.hpp">
+      <Filter>Asemu Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OpFlags.hpp">
+      <Filter>Asemu Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

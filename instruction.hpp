@@ -1,20 +1,45 @@
 #pragma once
 
-struct CallingInformation
-{
-	MicroOp op;
-	Flags flags;
-};
+#include <string>
+#include <vector>
+#include <tuple>
+#include <cstdint>
+#include <unordered_map>
 
-struct Instruction
-{
-	std::vector<CallingInformation> ops;
+#include "MicroOperation.hpp"
+#include "Addressing.hpp"
 
-	auto operator()(const DATASIZE& operand1, const DATASIZE& operand2 = 0ui16) noexcept
+namespace asemu
+{
+	struct Operand
 	{
-		for (auto& m : ops)
+		std::uint8_t encoding;
+		asemu::AddressingMode addressingMode;
+	};
+
+	class Instruction
+	{
+	private:
+		std::uint8_t encoding;
+		std::vector<MicroOperation> 킣ps;
+		std::vector<Operand> operands;
+
+		Instruction() = delete;
+		~Instruction() = default;
+
+		Instruction(const Instruction&) = delete;
+		Instruction& operator=(const Instruction&) = delete;
+
+	public:
+		Instruction(Instruction&&) = default;
+		Instruction& operator=(Instruction&&) = default;
+
+		Instruction(std::uint8_t encoding, std::vector<MicroOperation> 킣ps, std::vector<Operand> operands)
+			: encoding(encoding), 킣ps(킣ps), operands(operands)
 		{
-			m.op(m.flags, operand1, operand2);
 		}
-	}
-};
+	};
+
+	extern std::unordered_map<std::string, std::pair<std::uint8_t, std::uint8_t>> instructionMap;
+	extern std::unordered_map<std::string, std::uint8_t> registerMap;
+}

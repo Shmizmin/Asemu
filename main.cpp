@@ -22,9 +22,9 @@ using Register = Memory<1>;
 
 Memory<MEMSIZE> memory;
 
-std::array registers{ Register(), Register(), Register() };
+std::array registers{ Register(), Register(), Register(), Register() };
 
-DATASIZE programCounter = 128ui16;
+DATASIZE& programCounter = regval(3);
 
 constexpr auto basePointer = 128ui16;
 
@@ -45,6 +45,7 @@ auto step(DATASIZE instruction, DATASIZE operand1, DATASIZE operand2) noexcept
 {
 	switch (instruction)
 	{
+	case 0: break;
 	case 1: return MPMIO(operand1, operand2); break;
 	case 2: return MRMIO(operand1, operand2); break;
 
@@ -119,6 +120,7 @@ int main(void)
 	ReplaceStringInPlace(code, "SBX", "1");
 	ReplaceStringInPlace(code, "SSP", "2");
 	ReplaceStringInPlace(code, "SBP", "128");
+	ReplaceStringInPlace(code, "SIP", std::to_string(programCounter));
 	ReplaceStringInPlace(code, "\n", "");
 	auto lines = split(code, ';');
 
@@ -158,7 +160,7 @@ int main(void)
 		ReplaceStringInPlace(line, "RRSHL", "26");
 		ReplaceStringInPlace(line, "RRSHR", "27");
 
-		ReplaceStringInPlace(line, "UNJMP", "28");
+		ReplaceStringInPlace(line, "UOJMP", "28");
 
 		ReplaceStringInPlace(line, "ERJMP", "29");
 		ReplaceStringInPlace(line, "NRJMP", "30");
@@ -181,24 +183,14 @@ int main(void)
 
 	while (true)
 	{
-		if (programCounter < (DATASIZE(lines.size() * 3z) + basePointer))
-		{
-			{
-				auto instruction = memory.read(programCounter + 0ui16);
-				auto operand1    = memory.read(programCounter + 1ui16);
-				auto operand2    = memory.read(programCounter + 2ui16);
+		auto instruction = memory.read(programCounter + 0ui16);
+		auto operand1    = memory.read(programCounter + 1ui16);
+		auto operand2    = memory.read(programCounter + 2ui16);
 
-				std::cout << instruction << ' ' << operand1 << ' ' << operand2 << " : " << step(instruction, operand1, operand2);
+		std::cout << instruction << ' ' << operand1 << ' ' << operand2 << " : " << step(instruction, operand1, operand2);
 
-				programCounter += 3ui16;
-			}
-		}
-
-		else
-		{
-			return EXIT_SUCCESS;
-		}
-
+		programCounter += 3ui16;
+		
 		std::cin.ignore();
 	}
 

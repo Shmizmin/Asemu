@@ -18,6 +18,23 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="assembly.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Addressing.hpp" />
+    <ClInclude Include="Assembler.hpp" />
+    <ClInclude Include="Instruction.hpp" />
+    <ClInclude Include="MicroOperation.hpp" />
+    <ClInclude Include="OpFlags.hpp" />
+    <ClInclude Include="Parser.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Assembler.cpp" />
+    <ClCompile Include="Instruction.cpp" />
+    <ClCompile Include="MicroOperation.cpp" />
+    <ClCompile Include="Parser.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -140,24 +157,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="alu.hpp" />
-    <ClInclude Include="core.hpp" />
-    <ClInclude Include="flags.hpp" />
-    <ClInclude Include="helper.hpp" />
-    <ClInclude Include="instruction.hpp" />
-    <ClInclude Include="instruction_define.hpp" />
-    <ClInclude Include="memory.hpp" />
-    <ClInclude Include="microop.hpp" />
-    <ClInclude Include="microop_define.hpp" />
-    <ClInclude Include="pipeline.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="assembly.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
