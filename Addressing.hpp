@@ -1,29 +1,37 @@
 #pragma once
 
 #include <cstdint>
+#include "Literals.hpp"
 
 namespace asemu
 {
-	enum class AddressingMode : std::uint8_t
+	enum AddressingMode : std::uint8_t
 	{
-		ABSOLUTE_REG,
-		ABSOLUTE_MEM,
+		NULL_ADDRESSING = 0uc,
 
-		DEREFERENCE_REG,
-		DEREFERENCE_MEM,
+		REG_ABSOLUTE = 1uc,
+		MEM_ABSOLUTE = 2uc,
 
-		RELATIVE,
-		IMMEDIATE
+		REG_DEREFERENCE = 3uc,
+		MEM_DEREFERENCE = 4uc,
+
+		REG_RELATIVE = 5uc,
+		MEM_RELATIVE = 6uc,
+
+		IMMEDIATE_DATA = 7uc
 	};
 
-	constexpr auto reg_absolute = 0b00000001ui8;
-	constexpr auto mem_absolute = 0b00000010ui8;
-	constexpr auto reg_deref    = 0b00000011ui8;
-	constexpr auto mem_deref    = 0b00000100ui8;
-	constexpr auto reg_relative = 0b00000101ui8;
-	constexpr auto mem_relative = 0b00000110ui8;
-	constexpr auto immediate    = 0b00000111ui8;
+	enum EncodingScheme : std::uint8_t
+	{
+		ADDITION       = 0b00010000uc,
+		SUBTRACTION    = 0b00100000uc,
+		MULTIPLICATION = 0b00110000uc,
+		DIVISION       = 0b01000000uc,
+		SHIFT_LEFT     = 0b01010000uc,
+		SHIFT_RIGHT    = 0b01100000uc,
+		MODULUS        = 0b01110000uc
+	};
 
-	constexpr auto relative_sign_bit = 0b10000000ui8;
-	constexpr auto relative_data_bit = 0b01111000ui8;
+	constexpr auto OPERATOR_MASK = 0b11110000uc;
+	constexpr auto DATA_MASK     = 0b00001111uc;
 }

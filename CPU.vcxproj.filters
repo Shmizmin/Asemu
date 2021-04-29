@@ -29,6 +29,18 @@
     <ClCompile Include="MicroOperation.cpp">
       <Filter>Asemu Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Executor.cpp">
+      <Filter>Asemu Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Processor.cpp">
+      <Filter>Asemu Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Asemu Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InstructionDecoder.cpp">
+      <Filter>Asemu Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser.hpp">
@@ -47,6 +59,18 @@
       <Filter>Asemu Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OpFlags.hpp">
+      <Filter>Asemu Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Executor.hpp">
+      <Filter>Asemu Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Processor.hpp">
+      <Filter>Asemu Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InstructionDecoder.hpp">
+      <Filter>Asemu Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Literals.hpp">
       <Filter>Asemu Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,7 +1,7 @@
 #include "Parser.hpp"
 #include "Instruction.hpp"
 
-std::vector<std::string>&& asemu::Parser::split(const std::string& string, char delimiter) noexcept
+std::vector<std::string> asemu::Parser::split(const std::string& string, char delimiter) noexcept
 {
 	std::vector<std::string> strings;
 	std::size_t start;
@@ -13,7 +13,7 @@ std::vector<std::string>&& asemu::Parser::split(const std::string& string, char 
 		strings.push_back(string.substr(start, end - start));
 	}
 
-	return std::move(strings);
+	return strings;
 }
 
 void asemu::Parser::replace(std::string& string, const std::string& search, const std::string& replace) noexcept
@@ -26,7 +26,7 @@ void asemu::Parser::replace(std::string& string, const std::string& search, cons
 	}
 }
 
-std::vector<std::string>&& asemu::Parser::parse(const char* filepath) noexcept
+std::vector<std::string> asemu::Parser::parse(const char* filepath) noexcept
 {
 	std::ifstream t(filepath);
 	std::string code;
@@ -38,5 +38,5 @@ std::vector<std::string>&& asemu::Parser::parse(const char* filepath) noexcept
 	code.assign((std::istreambuf_iterator<char>(t)),
 		std::istreambuf_iterator<char>());
 
-	return std::move(split(code, '\n'));
+	return this->split(code, '\n');
 }
