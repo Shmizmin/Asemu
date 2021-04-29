@@ -41,6 +41,9 @@
     <ClCompile Include="InstructionDecoder.cpp">
       <Filter>Asemu Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Memory.cpp">
+      <Filter>Asemu Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser.hpp">
@@ -71,6 +74,9 @@
       <Filter>Asemu Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Literals.hpp">
+      <Filter>Asemu Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory.hpp">
       <Filter>Asemu Header Files</Filter>
     </ClInclude>
   </ItemGroup>

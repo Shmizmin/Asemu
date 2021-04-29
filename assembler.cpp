@@ -7,6 +7,25 @@
 #include <sstream>
 #include <utility>
 
+// for string delimiter
+std::vector<std::string> split(std::string s, std::string delimiter)
+{
+	size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+	std::string token;
+	std::vector<std::string> res;
+
+	while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos)
+	{
+		token = s.substr(pos_start, pos_end - pos_start);
+		pos_start = pos_end + delim_len;
+		res.push_back(token);
+	}
+
+	res.push_back(s.substr(pos_start));
+	return res;
+}
+
+
 inline bool isInt(const std::string& s, int base) noexcept
 {
 	if (s.empty() || std::isspace(s[0])) return false;
@@ -49,19 +68,36 @@ void asemu::Assembler::assemble(std::vector<std::string>& lines) noexcept
 {
 	for (auto& line : lines)
 	{
-		auto tokens = parser.split(line, ' ');
-		auto operands = parser.split(tokens[1], ',');
+		if (line[0z] == '/')
+			continue;
+		
+		//auto tokens = parser.split(line, ' ');
+		//auto operands = parser.split(tokens[1], ',');
+		//auto operands
+		std::vector<std::string> tokens;
+		std::vector<std::string> operands;
 
+		tokens = parser.split(line, ':');
+
+		if (tokens.size() != 0z)
+		{
+			operands = parser.split(tokens[1], ',');
+		}
 		auto& instruction = tokens[0];
+
+
+
 		auto& decoded = asemu::instructionMap[instruction];
 		auto& encoding = std::get<0>(decoded);
 		auto& size = std::get<1>(decoded);
 
 		machineCode.emplace_back(encoding);
 	
-		if (size == operands.size())
+		auto&& sizeT = static_cast<std::size_t>(size);
+
+		if (sizeT == operands.size())
 		{
-			for (auto s = 0z; s < size; ++s)
+			for (auto s = 0z; s < sizeT; ++s)
 			{
 				auto percent = operands[s].find('%');
 				auto pound = operands[s].find('#');
@@ -78,28 +114,28 @@ void asemu::Assembler::assemble(std::vector<std::string>& lines) noexcept
 					return std::isalpha(static_cast<std::uint8_t>(ch));
 				};
 
-
 				if (test(percent))
 				{
+					std::puts("Found an relative data token!");
+					
 					parser.replace(operands[s], "%", "");
 					parser.replace(operands[s], "[", "");
 					parser.replace(operands[s], "]", "");
 				
-					auto parts = parser.split(operands[s], ' ');
-				
-				
+					auto parts = split(operands[s], " ");
+
 					auto encoded = 0uc;
 					switch (parts[1z][0z])
 					{
-						case '+': encoded &= asemu::EncodingScheme::ADDITION;       break;
-						case '-': encoded &= asemu::EncodingScheme::SUBTRACTION;    break;
-						case '*': encoded &= asemu::EncodingScheme::MULTIPLICATION; break;
-						case '/': encoded &= asemu::EncodingScheme::DIVISION;       break;
-						case '<': encoded &= asemu::EncodingScheme::SHIFT_LEFT;     break;
-						case '>': encoded &= asemu::EncodingScheme::SHIFT_RIGHT;    break;
-						case '~': encoded &= asemu::EncodingScheme::MODULUS;        break;
+						case '+': encoded |= asemu::EncodingScheme::ADDITION;       break;
+						case '-': encoded |= asemu::EncodingScheme::SUBTRACTION;    break;
+						case '*': encoded |= asemu::EncodingScheme::MULTIPLICATION; break;
+						case '/': encoded |= asemu::EncodingScheme::DIVISION;       break;
+						case '<': encoded |= asemu::EncodingScheme::SHIFT_LEFT;     break;
+						case '>': encoded |= asemu::EncodingScheme::SHIFT_RIGHT;    break;
+						case '~': encoded |= asemu::EncodingScheme::MODULUS;        break;
 					}
-					encoded &= static_cast<std::uint8_t>(std::stoi(operands[s]));
+					encoded |= static_cast<std::uint8_t>(std::stoi(parts[2z]));
 				
 				
 					if (myAlpha(operands[s][0z]))
@@ -119,6 +155,8 @@ void asemu::Assembler::assemble(std::vector<std::string>& lines) noexcept
 				
 				else if (test(pound))
 				{
+					std::puts("Found an immediate data token!");
+					
 					parser.replace(operands[s], "#", "");
 				
 					if (test(operands[s].find('$')))
@@ -140,6 +178,8 @@ void asemu::Assembler::assemble(std::vector<std::string>& lines) noexcept
 				
 				else if (test(ampersand))
 				{
+					std::puts("Found an dereference data token!");
+
 					if (myAlpha(operands[s][ampersand + 1z]))
 					{
 						parser.replace(operands[s], "&", "");
@@ -172,7 +212,9 @@ void asemu::Assembler::assemble(std::vector<std::string>& lines) noexcept
 				
 				else if (test(star))
 				{
-					if (myAlpha(operands[s][ampersand + 1z]))
+					std::puts("Found an absolute data token!");
+					
+					if (myAlpha(operands[s][star + 1z]))
 					{
 						parser.replace(operands[s], "*", "");
 				
@@ -186,12 +228,12 @@ void asemu::Assembler::assemble(std::vector<std::string>& lines) noexcept
 				
 						machineCode.emplace_back(asemu::AddressingMode::MEM_ABSOLUTE);
 				
-						if (operands[s][ampersand + 2z] == '$')
+						if (operands[s][star + 2z] == '$')
 						{
 							machineCode.emplace_back(static_cast<std::uint8_t>(hexToInt(operands[s])));
 						}
 				
-						if (operands[s][ampersand + 2z] == '@')
+						if (operands[s][star + 2z] == '@')
 						{
 							machineCode.emplace_back(static_cast<std::uint8_t>(std::stoi(operands[s])));
 						}
@@ -208,7 +250,7 @@ void asemu::Assembler::assemble(std::vector<std::string>& lines) noexcept
 
 		else
 		{
-			std::puts("Mismatched operand count for specified instruction");
+			std::puts("Mismatched operand count for specified instruction : ");
 			std::exit(2);
 		}
 

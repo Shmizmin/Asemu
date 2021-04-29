@@ -33,23 +33,28 @@ std::unordered_map<std::string, std::uint8_t> asemu::registerMap =
 	{ "sip", 7uc }
 };
 
+using Mode = asemu::AddressingMode;
+
 std::unordered_map<std::uint8_t, std::vector<asemu::MicroOperation>> asemu::µOpMap =
 {
-	{  0uc, {  } },
-	{  1uc, {  } },
-	{  2uc, {  } },
-	{  3uc, {  } },
-	{  4uc, {  } },
-	{  5uc, {  } },
-	{  6uc, {  } },
-	{  7uc, {  } },
-	{  8uc, {  } },
-	{  9uc, {  } },
-	{ 10uc, {  } },
-	{ 11uc, {  } },
-	{ 12uc, {  } },
-	{ 13uc, {  } },
-	{ 14uc, {  } },
-	{ 15uc, {  } },
-	{ 16uc, {  } }
+
 };
+//{
+//	{  0uc, { Mode::NULL_ADDRESSING, [&](µOpArgs) {  } } },
+//	{  1uc, {  } },
+//	{  2uc, {  } },
+//	{  3uc, {  } },
+//	{  4uc, {  } },
+//	{  5uc, {  } },
+//	{  6uc, {  } },
+//	{  7uc, {  } },
+//	{  8uc, {  } },
+//	{  9uc, {  } },
+//	{ 10uc, {  } },
+//	{ 11uc, {  } },
+//	{ 12uc, {  } },
+//	{ 13uc, {  } },
+//	{ 14uc, {  } },
+//	{ 15uc, {  } },
+//	{ 16uc, {  } }
+//};

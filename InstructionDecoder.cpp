@@ -1,5 +1,8 @@
 #include "InstructionDecoder.hpp"
 #include "Literals.hpp"
+#include "Addressing.hpp"
+
+#include <algorithm>
 
 asemu::Instruction asemu::InstructionDecoder::decode(std::vector<std::uint8_t>& bytes) noexcept
 {
@@ -25,12 +28,70 @@ asemu::Instruction asemu::InstructionDecoder::decode(std::vector<std::uint8_t>& 
 	return insn;
 }
 
-std::vector<std::vector<std::uint8_t>> asemu::InstructionDecoder::defuse(std::vector<std::uint8_t>& bytes) noexcept
+void asemu::InstructionDecoder::defuse(const std::vector<std::uint8_t>& bytes) noexcept
 {
-	return std::vector<std::vector<std::uint8_t>>{ { bytes } };
+	auto find = [&](std::uint8_t val)
+	{
+		std::uint8_t out;
+
+		std::for_each
+		(
+			asemu::instructionMap.begin(), asemu::instructionMap.end(),
+			[&](const std::pair<std::string, std::tuple<std::uint8_t, std::uint8_t>>& p)
+			{
+				if (std::get<0>(p.second) == val)
+				{
+					out = std::get<1>(p.second);
+				}
+			}
+		);
+
+		return out;
+	};
+
+	auto step = [&](std::uint8_t val)
+	{
+		auto returnVal = 0uc;
+		
+		switch (val)
+		{
+		case asemu::AddressingMode::NULL_ADDRESSING:
+			break;
+
+		case asemu::AddressingMode::MEM_RELATIVE:
+			[[fallthrough]];
+		case asemu::AddressingMode::REG_RELATIVE:
+			returnVal = 3uc;
+			break;
+		default:
+			returnVal = 2uc;
+
+		}
+		
+		return returnVal;
+	};
+
+	auto s = 0z;
+	auto i = 0z;
+	for (; i < bytes.size() ;)
+	{
+		s = i;
+		
+		auto operandCount = find(bytes[i]);
+
+		for (auto j = 0z; j < operandCount; ++j)
+		{
+			i += step(bytes[i]);
+		}
+
+		std::vector<std::uint8_t> data;
+		std::copy(bytes.begin() + s, bytes.end() + i, data.begin());
+
+		processedBytes.emplace_back(std::move(data));
+	}
 }
 
-auto asemu::InstructionDecoder::decode(void) noexcept
+void asemu::InstructionDecoder::decode(void) noexcept
 {
 	for (auto& s : processedBytes)
 	{
@@ -38,7 +99,7 @@ auto asemu::InstructionDecoder::decode(void) noexcept
 	}
 }
 
-auto asemu::InstructionDecoder::fetchInstructions(void) noexcept
+std::vector<asemu::Instruction> asemu::InstructionDecoder::fetchInstructions(void) noexcept
 {
 	return this->instructions;
 }

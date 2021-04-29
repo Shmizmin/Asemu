@@ -1,4 +1,9 @@
-MOV SAX $3
-MOV SBX $1
-SUB SAX SBX
-JNZ %[SIP - 3]
+mov:*sax,#$3
+mov:*sbx,#$1
+sub:*sax,*sbx
+jnz:*sax,%[sip - 3]
+
+//1 1 1 7 3
+//1 1 2 7 1
+//3 1 1 1 2
+//10 1 1 5 7 35

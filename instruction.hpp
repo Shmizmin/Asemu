@@ -6,8 +6,8 @@
 #include <cstdint>
 #include <unordered_map>
 
-#include "MicroOperation.hpp"
 #include "Addressing.hpp"
+#include "MicroOperation.hpp"
 
 namespace asemu
 {

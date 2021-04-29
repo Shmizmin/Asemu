@@ -13,19 +13,19 @@ namespace asemu
 		explicit InstructionDecoder(std::vector<std::uint8_t>& bytes) noexcept
 			: rawBytes(bytes)
 		{
-			processedBytes = defuse(rawBytes);
+			defuse(rawBytes);
+			decode();
 		}
 
-		auto decode(void) noexcept;
-		auto fetchInstructions(void) noexcept;
+		void decode(void) noexcept;
+		std::vector<Instruction> fetchInstructions(void) noexcept;
 
-	private:
 		std::vector<std::uint8_t> rawBytes;
 		std::vector<std::vector<std::uint8_t>> processedBytes;
 
 		std::vector<asemu::Instruction> instructions;
 
 		asemu::Instruction decode(std::vector<std::uint8_t>& bytes) noexcept;
-		std::vector<std::vector<std::uint8_t>> defuse(std::vector<std::uint8_t>& bytes) noexcept;
+		void defuse(const std::vector<std::uint8_t>& bytes) noexcept;
 	};
 }
